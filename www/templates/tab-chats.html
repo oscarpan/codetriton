@@ -1,0 +1,19 @@
+<ion-view view-title="Offers">
+  <ion-content>
+    <ion-list>
+
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="offer in offers">
+        <img ng-src="{{ offer.user.image }}">
+        <h2>{{offer.user.name}}</h2>
+        <p>{{offer.food}} for {{offer.points}} points</p>
+        <p>Limit of {{offer.limit}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(offer)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+
+    </ion-list>
+  </ion-content>
+</ion-view>

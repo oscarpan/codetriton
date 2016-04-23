@@ -1,0 +1,34 @@
+<ion-view>
+  <ion-nav-title>
+    Welcome {{ user.name }}
+  </ion-nav-title>
+  <ion-content>
+    {{ test }}
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Food Items</span>
+        <input type="text" placeholder="Organic Salad" ng-model="form.food">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Time</span>
+        <input type="date" placeholder="" ng-model="form.time">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Guest Limit</span>
+        <input type="number" placeholder="2" ng-model="form.limit">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Points</span>
+        <input type="number" placeholder="2" ng-model="form.points">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Location</span>
+        <input type="text" placeholder="La Jolla, CA" ng-model="form.location">
+      </label>
+    </div>
+    <div class="padding">
+      <button class="button button-block button-positive" ng-click="host(form)">Let's Host!</button>
+    </div>
+
+  </ion-content>
+</ion-view>
