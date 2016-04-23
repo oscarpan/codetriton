@@ -8,8 +8,8 @@
 angular.module('starter', ['ionic', 'ngCordova', 'ionic-ratings', 'starter.controllers', 'starter.services'])
 
     .constant("config", {
-      apiURL: "http://foodmash.oscarpan.com/api"
-      //apiURL: "http://codetriton.app/api"
+      //apiURL: "http://foodmash.oscarpan.com/api"
+      apiURL: "http://codetriton.app/api"
     })
 
     .run(function($ionicPlatform) {
