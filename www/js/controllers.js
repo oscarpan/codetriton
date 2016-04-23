@@ -107,7 +107,7 @@ angular.module('starter.controllers', [])
         $scope.doRefresh = refreshData;
     })
 
-    .controller('OfferDetailCtrl', function($scope, $rootScope, config, $http, $stateParams, $localstorage, $filter, $ionicPlatform, $cordovaFacebook) {
+    .controller('OfferDetailCtrl', function($scope, $rootScope, config, $http, $stateParams, $localstorage, $filter, $ionicPlatform, $cordovaFacebook, $location) {
         var offerid = $stateParams.offerId;
 
         var offers = $localstorage.getArray('offers');
@@ -143,13 +143,14 @@ angular.module('starter.controllers', [])
 
             var data = {
                 offer_id: offerid,
-                host_id: $scope.offer.user.id,
+                host_id: $scope.offer.f_b_user_id,
                 guest_id: $scope.user.id,
                 approval: 0
             };
             $http.post(config.apiURL+'/createMatch', data, config)
                 .then(function(success){
                     console.log(success);
+                    $location.path("#/tab/offers");
                 });
         };
 
@@ -196,9 +197,9 @@ angular.module('starter.controllers', [])
                     iconOnColor: 'rgb(200, 200, 100)',  //Optional
                     iconOffColor:  'rgb(200, 100, 100)',    //Optional
                     rating:  parseInt($scope.guest_user.guest_rating), //Optional
-                    readOnly: true, //Optional
+                    //readOnly: true, //Optional
                     callback: function(rating) {    //Mandatory
-                        $scope.ratingsCallback(rating);
+                        $scope.guestRatingsCallback(rating);
                     }
                 };
                 $scope.hostRatingsObject = {
@@ -207,10 +208,34 @@ angular.module('starter.controllers', [])
                     iconOnColor: 'rgb(200, 200, 100)',  //Optional
                     iconOffColor:  'rgb(200, 100, 100)',    //Optional
                     rating:  parseInt($scope.host_user.host_rating), //Optional
-                    readOnly: true, //Optional
+                    //readOnly: true, //Optional
                     callback: function(rating) {    //Mandatory
-                        $scope.ratingsCallback(rating);
+                        $scope.hostRatingsCallback(rating);
                     }
+                };
+                $scope.guestRatingsCallback = function(rating) {
+                    var data  = {
+                        match_id: matchid,
+                        guest_rating: rating
+                    };
+                    $http.post(config.apiURL+'/updateGuestRating', data, config)
+                        .then(function(success){
+                            console.log(success);
+                            refreshData();
+                        });
+                    console.log('Selected rating is : ', rating);
+                };
+                $scope.hostRatingsCallback = function(rating) {
+                    var data  = {
+                        match_id: matchid,
+                        host_rating: rating
+                    };
+                    $http.post(config.apiURL+'/updateHostRating', data, config)
+                        .then(function(success){
+                            console.log(success);
+                            refreshData();
+                        });
+                    console.log('Selected rating is : ', rating);
                 };
             });
 
@@ -223,11 +248,23 @@ angular.module('starter.controllers', [])
         }
 
 
-        $http.get(config.apiURL+'/match/'+matchid)
-            .then(function(data){
-                console.log(data.data);
-                $scope.matchinfo = data.data;
-            });
+        $scope.$on('$ionicView.enter', function(e) {
+            refreshData();
+        });
+        function refreshData(){
+            $http.get(config.apiURL+'/match/'+matchid)
+                .then(function(data){
+                    console.log(data.data);
+                    $scope.matchinfo = data.data;
+                })
+                .finally(function(){
+                    $scope.$broadcast('scroll.refreshComplete');
+                });
+        }
+        $scope.doRefresh = refreshData;
+
+
+
 
 
         $scope.form = {};
@@ -245,6 +282,7 @@ angular.module('starter.controllers', [])
             $http.post(config.apiURL+'/createMessage', data, config)
                 .then(function(success){
                     console.log(success);
+                    refreshData();
                 });
         };
 
@@ -264,9 +302,7 @@ angular.module('starter.controllers', [])
 
 
 
-        $scope.ratingsCallback = function(rating) {
-            console.log('Selected rating is : ', rating);
-        };
+
 
     })
 

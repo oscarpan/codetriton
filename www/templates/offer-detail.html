@@ -47,7 +47,7 @@
       <div class="item item-divider">
         Interested in this Offer
       </div>
-      <a class="item item-avatar" href="#/tab/offers/{{offer.id}}/{{match.id}}" ng-repeat="match in offer.matches | filter:{'guest_id': user.id}:true">
+      <a class="item item-avatar  item-icon-right" href="#/tab/offers/{{offer.id}}/{{match.id}}" ng-repeat="match in offer.matches | filter:{'guest_id': user.id}:true">
         <img ng-src="https://graph.facebook.com/{{ match.guest_id }}/picture?type=normal">
         <div ng-repeat="user in users | filter:{'id': match.guest_id}:true">
           <h2>{{ user.name }}</h2>

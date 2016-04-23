@@ -6,10 +6,11 @@
 -->
 <ion-view view-title="{{offer.user.name}}">
     <ion-content>
+        <ion-refresher
+                pulling-text="Pull to refresh..."
+                on-refresh="doRefresh()">
+        </ion-refresher>
 
-        {{ match }}
-
-        {{ meta }}
 
         <div ng-if="meta.host" ng-repeat="guestuser in users | filter:{'id': match.guest_id}:true">
             <h4 class="text-center">You were matched with {{ guestuser.name }}!</h4>
@@ -38,7 +39,7 @@
 
 
         <div class="list">
-            <a class="item item-avatar" href="#" ng-repeat="message in matchinfo.messages" ng-if="meta.host">
+            <a class="item item-avatar" ng-repeat="message in matchinfo.messages">
                 <img ng-repeat="user in users | filter:{'id': message.sender_id}:true" ng-src="https://graph.facebook.com/{{ user.id }}/picture?type=normal">
                 <h2 ng-repeat="user in users | filter:{'id': message.sender_id}:true">{{user.name}}</h2>
                 <p>{{ message.content }}</p>
