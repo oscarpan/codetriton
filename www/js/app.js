@@ -80,6 +80,15 @@ angular.module('starter', ['ionic', 'ngCordova', 'ionic-ratings', 'starter.contr
               }
             }
           })
+          .state('tab.offer-match-detail', {
+            url: '/offers/:offerId/:matchId',
+            views: {
+              'tab-offers': {
+                templateUrl: 'templates/match-detail.html',
+                controller: 'OfferMatchDetailCtrl'
+              }
+            }
+          })
 
           .state('tab.account', {
             url: '/account',

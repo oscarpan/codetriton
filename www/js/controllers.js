@@ -116,6 +116,27 @@ angular.module('starter.controllers', [])
 
         $scope.user = $localstorage.getObject('user');
 
+        $http.get(config.apiURL+'/users')
+            .then(function(data){
+                $scope.users = data.data;
+            });
+
+
+        $scope.meta = {};
+        if($scope.offer.f_b_user_id == $scope.user.id){
+            $scope.meta.host = true;
+        }
+        else{
+            $scope.meta.host = false;
+
+            if($filter('filter')($scope.offer.matches, {guest_id: $scope.user.id})[0]){
+                $scope.meta.matched = true;
+            }
+        }
+
+
+
+
         //console.log($scope.offer);
 
         $scope.interested = function(){
@@ -137,12 +158,111 @@ angular.module('starter.controllers', [])
             iconOff: 'ion-ios-star-outline',   //Optional
             iconOnColor: 'rgb(200, 200, 100)',  //Optional
             iconOffColor:  'rgb(200, 100, 100)',    //Optional
-            rating:  $scope.offer.user.host_rating, //Optional
+            rating:  parseInt($scope.offer.user.host_rating), //Optional
             readOnly: true, //Optional
             callback: function(rating) {    //Mandatory
                 $scope.ratingsCallback(rating);
             }
         };
+
+        $scope.ratingsCallback = function(rating) {
+            console.log('Selected rating is : ', rating);
+        };
+
+    })
+
+    .controller('OfferMatchDetailCtrl', function($scope, $rootScope, config, $http, $stateParams, $localstorage, $filter, $ionicPlatform, $cordovaFacebook) {
+        var offerid = $stateParams.offerId;
+        var matchid = $stateParams.matchId;
+
+        var offers = $localstorage.getArray('offers');
+
+        $scope.offer = $filter('filter')(offers, {id: offerid})[0];
+
+        $scope.match = $filter('filter')($scope.offer.matches, {id: matchid})[0];
+
+        $scope.user = $localstorage.getObject('user');
+
+        $http.get(config.apiURL+'/users')
+            .then(function(data){
+                $scope.users = data.data;
+
+                $scope.host_user = $filter('filter')(data.data, {id: $scope.match.host_id})[0];
+                $scope.guest_user = $filter('filter')(data.data, {id: $scope.match.guest_id})[0];
+
+                $scope.guestRatingsObject = {
+                    iconOn: 'ion-ios-star',    //Optional
+                    iconOff: 'ion-ios-star-outline',   //Optional
+                    iconOnColor: 'rgb(200, 200, 100)',  //Optional
+                    iconOffColor:  'rgb(200, 100, 100)',    //Optional
+                    rating:  parseInt($scope.guest_user.guest_rating), //Optional
+                    readOnly: true, //Optional
+                    callback: function(rating) {    //Mandatory
+                        $scope.ratingsCallback(rating);
+                    }
+                };
+                $scope.hostRatingsObject = {
+                    iconOn: 'ion-ios-star',    //Optional
+                    iconOff: 'ion-ios-star-outline',   //Optional
+                    iconOnColor: 'rgb(200, 200, 100)',  //Optional
+                    iconOffColor:  'rgb(200, 100, 100)',    //Optional
+                    rating:  parseInt($scope.host_user.host_rating), //Optional
+                    readOnly: true, //Optional
+                    callback: function(rating) {    //Mandatory
+                        $scope.ratingsCallback(rating);
+                    }
+                };
+            });
+
+        $scope.meta = {};
+        if($scope.offer.f_b_user_id == $scope.user.id){
+            $scope.meta.host = true;
+        }
+        else{
+            $scope.meta.host = false;
+        }
+
+
+        $http.get(config.apiURL+'/match/'+matchid)
+            .then(function(data){
+                console.log(data.data);
+                $scope.matchinfo = data.data;
+            });
+
+
+        $scope.form = {};
+        $scope.send = function(form){
+            var receiver = $scope.match.host_id;
+            if($scope.meta.host){
+                receiver = $scope.match.guest_id;
+            }
+            var data = {
+                match_id: matchid,
+                sender_id: $scope.user.id,
+                receiver_id: receiver,
+                content: form.message
+            };
+            $http.post(config.apiURL+'/createMessage', data, config)
+                .then(function(success){
+                    console.log(success);
+                });
+        };
+
+        $scope.interested = function(){
+
+            var data = {
+                offer_id: offerid,
+                host_id: $scope.offer.user.id,
+                guest_id: $scope.user.id,
+                approval: 0
+            };
+            $http.post(config.apiURL+'/createMatch', data, config)
+                .then(function(success){
+                    console.log(success);
+                });
+        };
+
+
 
         $scope.ratingsCallback = function(rating) {
             console.log('Selected rating is : ', rating);

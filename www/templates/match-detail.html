@@ -1,0 +1,59 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+<ion-view view-title="{{offer.user.name}}">
+    <ion-content>
+
+        {{ match }}
+
+        {{ meta }}
+
+        <div ng-if="meta.host" ng-repeat="guestuser in users | filter:{'id': match.guest_id}:true">
+            <h4 class="text-center">You were matched with {{ guestuser.name }}!</h4>
+
+            <div class="list card">
+                <div class="item item-avatar">
+                    <img ng-src="https://graph.facebook.com/{{ offer.user.id }}/picture?type=normal">
+                    <ionic-ratings ratingsobj='guestRatingsObject' class="offer_detail_ratings"></ionic-ratings>
+                    <h2>{{ offer.user.name }}</h2>
+                    <p>{{ offer.user.points }} Points</p>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="!meta.host" ng-repeat="hostuser in users | filter:{'id': match.host_id}:true">
+            <h4 class="text-center">You matched with {{ hostuser.name }}!</h4>
+            <div class="list card">
+                <div class="item item-avatar">
+                    <img ng-src="https://graph.facebook.com/{{ hostuser.id }}/picture?type=normal">
+                    <ionic-ratings ratingsobj='hostRatingsObject' class="offer_detail_ratings"></ionic-ratings>
+                    <h2>{{ hostuser.name }}</h2>
+                    <p>{{ hostuser.points }} Points</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="list">
+            <a class="item item-avatar" href="#" ng-repeat="message in matchinfo.messages" ng-if="meta.host">
+                <img ng-repeat="user in users | filter:{'id': message.sender_id}:true" ng-src="https://graph.facebook.com/{{ user.id }}/picture?type=normal">
+                <h2 ng-repeat="user in users | filter:{'id': message.sender_id}:true">{{user.name}}</h2>
+                <p>{{ message.content }}</p>
+            </a>
+
+            <div class="item item-input-inset">
+                <label class="item-input-wrapper">
+                    <input type="text" placeholder="Send a message" ng-model="form.message">
+                </label>
+                <button class="button button-small" ng-click="send(form)">
+                    Send
+                </button>
+            </div>
+        </div>
+
+
+    </ion-content>
+</ion-view>
