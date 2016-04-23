@@ -1,9 +1,13 @@
 <ion-view view-title="Offers">
   <ion-content>
+    <ion-refresher
+            pulling-text="Pull to refresh..."
+            on-refresh="doRefresh()">
+    </ion-refresher>
     <ion-list>
 
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="offer in offers">
-        <img ng-src="https://graph.facebook.com/{{ offer.user.id }}/picture?type=square">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="offer in offers" href="#/tab/offers/{{ offer.id }}">
+        <img ng-src="https://graph.facebook.com/{{ offer.user.id }}/picture?type=normal">
         <h2>{{offer.user.name}}</h2>
         <p>{{offer.food}} for {{offer.points}} points</p>
         <p>Limit of {{offer.limit}}</p>
