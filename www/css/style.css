@@ -1,1 +1,9 @@
 /* Empty. Add your own CSS if you like */
+
+.offer_detail_ratings{
+    float: right;
+    font-size: 25px;
+}
+.ionic_ratings .read_only {
+    pointer-events:none !important;
+}
