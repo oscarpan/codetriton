@@ -25,6 +25,8 @@ angular.module('starter.controllers', [])
     $ionicPlatform.ready(function() {
         $cordovaFacebook.login(["public_profile", "email", "user_friends"])
             .then(function (success) {
+                $scope.test3 = success;
+
                 $cordovaFacebook.api("me?fields=id,name,email", ["public_profile"])
                     .then(function(success) {
 
@@ -35,18 +37,11 @@ angular.module('starter.controllers', [])
 
                         $scope.form.f_b_user_id = success.id;
 
-                        $cordovaFacebook.api(success.id+'/picture?type=large').then(function(success2){
-                            console.log(success2);
-                            console.log(success2.data);
-
-                            success.image = success2.data.url;
-
-                            $http.post(config.apiURL+'/userLogin', success, config)
-                                .then(function(success){
-                                    $localstorage.setObject('user', success.data);
-                                    $rootScope.user = success.data;
-                                });
-                        });
+                        $http.post(config.apiURL+'/userLogin', success, config)
+                            .then(function(success){
+                                $localstorage.setObject('user', success.data);
+                                $rootScope.user = success.data;
+                            });
 
                         console.log(success);
                     }, function (error) {
@@ -83,14 +78,17 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+.controller('ChatDetailCtrl', function($scope, $stateParams, Chats, $ionicPlatform, $cordovaFacebook) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($rootScope, $scope, $localstorage) {
+.controller('AccountCtrl', function($rootScope, $scope, $localstorage, $ionicPlatform, $cordovaFacebook) {
 
     $rootScope.user = $localstorage.getObject('user');
 
+    $ionicPlatform.ready(function() {
+        $cordovaFacebook.logout();
+    });
 
   $scope.settings = {
     enableFriends: true

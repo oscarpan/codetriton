@@ -33,7 +33,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
 
     var appID = 1701903710079808;
     var version = "v2.0"; // or leave blank and default is v2.0
-  if (window.cordova.platformId == 'browser')
+  //if (window.cordova.platformId == 'browser')
     $cordovaFacebookProvider.browserInit(appID, version);
 
 
