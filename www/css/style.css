@@ -7,3 +7,11 @@
 .ionic_ratings .read_only {
     pointer-events:none !important;
 }
+
+ion-content{
+    background: url('../img/bg.png') no-repeat;
+    background-size: cover;
+}
+.list{
+    background: white;
+}
